@@ -1,18 +1,29 @@
 ---
 # tasks file for roles/webservers
+
 - name: Upload application file
   copy:
     src: "../files/index.php"
     dest: "{{ path_to_app }}"
     mode: 0755
+  tags: upload
+
+- include_vars: ../vars/secret-password.yml
+- name: Testing the secret password here
+  debug:
+    #variable is secretPassword
+    msg: "{{ secretPassword }}"
+
+  tags: secretpwd
 
 - name: Create simple info page
   copy:
     dest: "{{ path_to_app }}/info.php"
-    content: "<h1>Info about our server {{ansible_hostname}}</h1>"
+    content: "<h1>Info about our server {{ansible_hostname}} Some Changes</h1>"
 - name: See directory contents
   command: ls -la {{path_to_app}}
   register: dir_contents
+  tags: create
 
 - name: Debug directory contents
   debug:
